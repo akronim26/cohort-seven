@@ -251,3 +251,15 @@ Relevant references:
 * [EPF Project Idea: Prysm SSZ Query Language](https://github.com/eth-protocol-fellows/cohort-six/blob/master/projects/project-ideas.md#prysm-ssz-query-language)
 * [SSZ Query Language with Merkle Proofs](https://github.com/eth-protocol-fellows/cohort-six/blob/master/projects/ssz-ql-with-merkle-proofs.md.com)
 * [Electra Light Client Notes – SSZ Query Language](https://hackmd.io/@etan-status/electra-lc#SSZ-query-language)
+
+### Decentralized CL checkpoint sync
+
+By Etan Kissling (Nimbus)
+
+Ethereum claims to be [decentralized](https://ethereum.org/what-is-ethereum/), but the first step to running a node practically involves downloading a [checkpoint state](https://notes.ethereum.org/sWeLohipS9GdgMugYn9VkQ) from a trusted server. This project aims to replace that mechanism with a p2p based approach based on the Altair [light client sync protocol](https://github.com/ethereum/consensus-specs/blob/master/specs/altair/light-client/sync-protocol.md), extending that protocol to not just provide trust-minimized access to the latest beacon block header, but also to historical data including a recent finalized state from which new nodes can be initialized.
+
+The goal is to enable this impactful feature by default. To achieve that, Merkle proof collection must be efficient. Challenges include SSZ library work, cache design, reorg handling, libp2p / REST integration, and database work. Further, your feedback can directly influence the protocol as it is still under development.
+
+- [Grandine](https://github.com/grandinetech/grandine) / [Teku](https://github.com/Consensys/teku): Start here if you want to buidl the existing Altair [light client sync protocol](https://github.com/ethereum/consensus-specs/blob/master/specs/altair/light-client/sync-protocol.md) from scratch.
+- [Lighthouse](https://github.com/sigp/lighthouse) / [Lodestar](https://github.com/ChainSafe/lodestar) / [Prysm](https://github.com/OffchainLabs/prysm): Start here if interested in expanding an implementation with support for [light client data backfill](https://github.com/status-im/nimbus-eth2/pull/8445), and [decentralized checkpoint sync](https://github.com/etan-status/consensus-specs/commit/lc-snapsync) (early drafts).
+- [Nimbus](https://github.com/status-im/nimbus-eth2): Represented by myself, focusing on specs and contributing an implementation alongside yours.
