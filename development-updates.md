@@ -11,16 +11,17 @@ Phase one is the very beginning of the cohort. The first few weeks are dedicated
 
 | Name/GH                                         | Week 0                                                                                              | Week 1 | Week 2 |
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------------- | ------ | ------ |
-| [Blessing](https://github.com/dicethedev/)      | [Update 0](https://hackmd.io/@dicethedev/HkHB60wZfl)                                                  |        |        |
 | [Arsh](https://github.com/ArshLabs)             | [Update 0](https://hackmd.io/@arshlabs/HJtE30wWGg)                                                  |        |        |
 | [Ayush](https://github.com/0xAysh/)             | [ Update 0](https://hackmd.io/@0xAysh/EPF7-week-0-update)                                           |        |        |
 | [Bankat](https://github.com/mananuf/)           | [Update 0](https://hackmd.io/@manbankat/ryn-CDrbfx)                                                 |        |        |
+| [Blessing](https://github.com/dicethedev/)      | [Update 0](https://hackmd.io/@dicethedev/HkHB60wZfl)                                                |        |        |
 | [Conall](https://github.com/XRS-001/)           | [ Update 0](https://docs.fileverse.io/d/02001110001b#k=0YDBXHva0sJIlCC108YBhFhNP_4PFWtxqoGaQOqcFhM) |        |        |
+| [Keshav](https://www.github.com/keshavsharma25) | [Update 0](https://hackmd.io/@keshav0x/SJpIr3UWfl)                                                  |        |        |
+| [Kris](https://github.com/krisoshea-eth/)       | [Update 0](https://hackmd.io/@krisos/rJZ18M_-fg)                                                    |        |        |
 | [Mario](https://github.com/taxmeifyoucan/)      | [ Update 0](https://notes.ethereum.org/@MarioHavel/week0)                                           |        |        |
+| [Marko](https://github.com/markolazic01)        | [Update 0](https://hackmd.io/@lqzic/week-0-update)                                                  |        |        |
 | [Rahul](https://github.com/rahulbarmann/)       | [Update 0](https://hackmd.io/@8t0zzURJSC6IX5BOuOiGqQ/Sk0vwhHZfg)                                    |        |        |
 | [Sagar](https://www.github.com/SoarinSkySagar)  | [Update 0](https://hackmd.io/@5d9IS104QYmhm-pr1ypNJg/Bk3xoWQbGg)                                    |        |        |
-| [Keshav](https://www.github.com/keshavsharma25) | [Update 0](https://hackmd.io/@keshav0x/SJpIr3UWfl)                                                  |        |        |
-| [Marko](https://github.com/markolazic01)      | [Update 0](https://hackmd.io/@lqzic/week-0-update)                                           |        |        |
 
 
 
