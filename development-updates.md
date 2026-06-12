@@ -22,6 +22,7 @@ Phase one is the very beginning of the cohort. The first few weeks are dedicated
 | [Marko](https://github.com/markolazic01)        | [Update 0](https://hackmd.io/@lqzic/week-0-update)                                                  |        |        |
 | [Rahul](https://github.com/rahulbarmann/)       | [Update 0](https://hackmd.io/@8t0zzURJSC6IX5BOuOiGqQ/Sk0vwhHZfg)                                    |        |        |
 | [Sagar](https://www.github.com/SoarinSkySagar)  | [Update 0](https://hackmd.io/@5d9IS104QYmhm-pr1ypNJg/Bk3xoWQbGg)                                    |        |        |
+| [Zidan](https://github.com/mzf11125)            | [Update 0](https://hackmd.io/@MpYoLwpETrKvUBs2PpmPxA/BJC-dHOZze)                                    |        |        |
 
 
 
