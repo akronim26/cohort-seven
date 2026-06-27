@@ -54,7 +54,7 @@ Phase one is the very beginning of the cohort. The first few weeks are dedicated
 | [Tosin](https://www.github.com/tosynthegeek)         | [Update 0](https://hackmd.io/@tosynthgeek/BJCL-EFbfe)                                               | [Update 1](https://hackmd.io/@tosynthgeek/BybHgXSffe)                                          |        |
 | [Vansh](https://github.com/vanshsahay)               | [Update 0](https://hackmd.io/@vanshsahay/ByEF5juZMl)                                                | [Update 1](https://hackmd.io/@vanshsahay/SkFMZTrMGx)                                           |        |
 | [Vivek Singh Solanki](https://github.com/vivek-0509) | [Update 0](https://hackmd.io/@h2RUkQVmStGWLVKk0Ne1uQ/rkTa50vfGx)                                    | [Update 1](https://hackmd.io/@h2RUkQVmStGWLVKk0Ne1uQ/Hkm1OPBGMg)                               |        |
-| [Zidan](https://github.com/mzf11125)                 | [Update 0](https://hackmd.io/@MpYoLwpETrKvUBs2PpmPxA/BJC-dHOZze)                                    |                                                                                                |        |
+| [Zidan](https://github.com/mzf11125)            | [Update 0](https://hackmd.io/@MpYoLwpETrKvUBs2PpmPxA/BJC-dHOZze)                                    | [Update 1](https://hackmd.io/@MpYoLwpETrKvUBs2PpmPxA/ByWhfCLfMg) |        |
 
 ## Phase 2: Deep dive
 
