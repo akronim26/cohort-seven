@@ -8,6 +8,7 @@ Add your name **alphabetically** and link your updates to the corresponding tabl
 
 Phase one is the very beginning of the cohort. The first few weeks are dedicated to general learning about the EPF program, the Ethereum protocol as a whole and its development. Use resources from [EPF Study group](https://epf.wiki) to get started and make yourself familiar with various areas of Ethereum.
 
+
 | Name/GH                                              | Week 0                                                                                              | Week 1                                                            | Week 2 |
 | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------ |
 | [Aarish](https://github.com/aarishnaiyer)            | [Update 0](https://hackmd.io/@KkIQfF7fRl6hdN__0PApfw/Syz-F0gzMg)                                    | [Update 1](https://hackmd.io/@KkIQfF7fRl6hdN__0PApfw/SknpMWtGMg)  |        |
@@ -25,7 +26,7 @@ Phase one is the very beginning of the cohort. The first few weeks are dedicated
 | [Ifeoluwa](https://github.com/owanikin)              |                                                                                                     | [ Update 1](https://hackmd.io/@ZpBFaS-NSO-5Xkdm4jwolg/BJO7iYpWMx) |        |
 | [Isaac](https://github.com/isaac-akhigbe)            |                                                                                                     | [ Update 1](https://hackmd.io/@isaac-akhigbe/H1xgF3PGMl)          |        |
 | [Ivan](https://github.com/IvanAnishchuk)             | [Update 0](https://ivananishchuk.github.io/eth-protocol-fellowship/updates/2026-06-17-week-0/)      | [Update 1](https://ivananishchuk.github.io/eth-protocol-fellowship/updates/2026-06-22-week-1/) |        |
-| [Jack CC](https://github.com/JackCC703/)             | [Update 0](https://hackmd.io/@jackcc/epf7-week0)                                                    |                                                                   |        |
+| [Jack CC](https://github.com/JackCC703/)             | [Update 0](https://hackmd.io/@jackcc/epf7-week0)                                                    | [Update 1](https://hackmd.io/@jackcc/epf7-week1) |        |
 | [Jeff](https://www.github.com/jeffoodchain)          | [Update 0](https://hackmd.io/BEM-xj5dRBeh3MGHYIvYeQ)                                                | [Update 1](https://hackmd.io/gt-lk_pVS6efrBt8cAgRTw)              |        |
 | [Josh](https://github.com/JO-OLADEJI)                | [Update 0](https://hackmd.io/@hiOAMmPVSB6rKJF3A0TJIA/By6GJsnZGx)                                    |                                                                   |        |
 | [Kapil](https://github.com/Kapil-K-Kathiriya)        |                                                                                                     | [Update 1](https://hackmd.io/@kapilkmr/rJPl3lizMx)                |        |
