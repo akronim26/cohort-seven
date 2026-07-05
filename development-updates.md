@@ -74,7 +74,7 @@ The actual project development is the main part of the program. Post your regula
 | [Aarish](https://github.com/aarishnaiyer)            |                                                  |        |        |                  |
 | [Abhivansh](https://github.com/akronim26)            |                                                  |        |        |                  |
 | [Aiden](https://github.com/sgtSong)            |                                                  |        |        |                  |
-| [Arsh](https://github.com/ArshLabs)                  |                                                  |        |        |                  |
+| [Arsh](https://github.com/ArshLabs)                  | [Update 3](https://hackmd.io/@arshlabs/HklneUmO7zx)             |        |        |                  |
 | [Astrion](https://github.com/astrion-coder)          |                                                  |        |        |                  |
 | [Ayush](https://github.com/0xAysh/)                  |                                                  |        |        |                  |
 | [Bankat](https://github.com/mananuf/)                |                                                  |        |        |                  |
