@@ -91,7 +91,7 @@ With the gained insight into the protocol, the following weeks serve as a deep d
 | [Kris](https://github.com/krisoshea-eth/)            | [Update 3](https://hackmd.io/@krisos/BkiFy_KXMx) |        |        |                  |
 | [Mario](https://github.com/taxmeifyoucan/)           |                                                  |        |        |                  |
 | [Marko](https://github.com/markolazic01)             | [Update 3](https://hackmd.io/@lqzic/week-3-update) |        |        |                  |
-| [Mary](https://github.com/maryodior)                 |                                                  |        |        |                  |
+| [Mary](https://github.com/maryodior)                 | [Update 3](https://hackmd.io/@x68iqv9FTyOkG8bkePB-mw/BJv8c69XMl) |        |        |                  |
 | [Meek](https://github.com/mmsaki)                    |                                                  |        |        |                  |
 | [Mohit](https://github.com/groverInnovate)           |                                                  |        |        |                  |
 | [Parth](https://github.com/ParthSinghPS)             | [Update 3](https://hackmd.io/@ParthSinghPS/SJ-pRiuQGg) |        |        |                  |
