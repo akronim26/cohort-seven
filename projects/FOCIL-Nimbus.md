@@ -43,7 +43,7 @@ FOCIL introduces two main SSZ structures:
 
 ## Roadmap
 
-The work is structured into the phases below. The core implementation is led by the Nimbus team, while we (the fellows) assist across phases and take primary ownership of testing and debugging. The timeline for each phase depends largely on its complexity, and the phases are not strictly sequential — where dependencies allow, several can progress in parallel.
+The FOCIL implementation is structured into the phases below. The early development (Phases 0 through 2, and parts of Phase 3) is handled by the Nimbus core team itself. The fellows' contributions will start from Phase 4 onwards.
 
 ### Phase 0: Pools Foundation
 Build and wire up the inclusion list (IL) pools that store and manage incoming inclusion lists, backed by unit tests covering insertion, lookup, and eviction behaviour.
@@ -64,9 +64,9 @@ Bring inclusion lists onto the P2P layer:
 - implement request/response (`InclusionListsByRoot` / `InclusionListsByRange`) for syncing missing lists from peers.
 
 ### Phase 4: Validator Duties
-Implement the validator-side logic: epoch scheduling of IL duties, compiling transactions from the local mempool, and signing and publishing the `SignedInclusionList`.
+Implement the validator side logic: epoch scheduling of IL duties, compiling transactions from the local mempool, and signing and publishing the `SignedInclusionList`.
 
-### Phase 5: Enforcement (Gloas fork-choice gated)
+### Phase 5: Enforcement 
 Gate head selection so that only FOCIL-satisfying blocks are eligible as canonical heads, and enforce that proposers include the required IL transactions.
 
 ### Phase 6: Testing & API Hardening
