@@ -65,11 +65,11 @@ Req/Resp RPC methods allow peers to request light client data on demand:
 
 | Phase | Weeks | Deliverables |
 |-------|-------|--------------|
-| 1: Spec Layer & Data Generation | 6–7 | Implement the missing light client update types and schemas with fork-aware generation logic for active forks Altair through Gloas. |
+| 1: Spec Layer & Data Generation | 5–7 | Implement the missing light client update types and schemas with fork-aware generation logic for active forks Altair through Gloas. |
 | 2: Store & Collection Wiring | 8–11 | Build the store, implement best-update selection logic, and hook up runtime collection to block-import and finalization events. |
 | 3: REST API Completion | 12–13 | Complete the remaining endpoints to serve update data, supporting both JSON and SSZ formats. |
-| 4: P2P Gossip & Req/Resp Networking | 14–17 | Implement gossip managers to broadcast finality and optimistic updates to the network, and complete the remaining P2P Req/Resp RPC handlers. |
-| 5: Testing & Fixing | 18–21 | Address issues, bugs, and client optimizations identified during interop testing. |
+| 4: P2P Gossip & Req/Resp Networking | 14–16 | Implement gossip managers to broadcast finality and optimistic updates to the network, and complete the remaining P2P Req/Resp RPC handlers. |
+| 5: Testing & Fixing | 17–20 | Address issues, bugs, and client optimizations identified during interop testing. |
 
 ## Possible Challenges
 
