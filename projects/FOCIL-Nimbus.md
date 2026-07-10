@@ -43,22 +43,36 @@ FOCIL introduces two main SSZ structures:
 
 ## Roadmap
 
-### Phase 1 (Weeks 6–8): 
+The work is structured into the phases below. The core implementation is led by the Nimbus team, while we (the fellows) assist across phases and take primary ownership of testing and debugging. The timeline for each phase depends largely on its complexity, and the phases are not strictly sequential — where dependencies allow, several can progress in parallel.
 
-* Stay updated with the evolving FOCIL spec by following FOCIL breakout calls and tracking changes in the [consensus-specs repository](https://github.com/ethereum/consensus-specs/).
-* Follow the Nimbus team's implementation PRs to build an understanding of the codebase and implementation approach.
+### Phase 0: Pools Foundation
+Build and wire up the inclusion list (IL) pools that store and manage incoming inclusion lists, backed by unit tests covering insertion, lookup, and eviction behaviour.
 
-### Phase 2 (Weeks 8–10): 
+### Phase 1: Fork-choice State
+Build the IL satisfaction state within fork-choice. An aggregated pool is assembled from the inclusion lists contributed by each committee member, forming the basis for later enforcement.
 
-* Set up a local FOCIL devnet using available client images to understand the expected runtime behavior and interop surface before testing begins.
+### Phase 2: EL/Engine
+Wire the consensus layer to the execution layer through the Engine API:
+- add the IL-satisfied call on the Engine API,
+- implement the `get_inclusion_list` function,
+- add `inclusion_list_transactions` to the payload attributes.
 
-### Phase 3 (Weeks 11–13): 
+### Phase 3: Networking
+Bring inclusion lists onto the P2P layer:
+- subscribe to and score the IL gossip topic,
+- validate incoming gossip and admit it to the pool per the FOCIL rules (signature, timing, committee membership, size),
+- implement request/response (`InclusionListsByRoot` / `InclusionListsByRange`) for syncing missing lists from peers.
 
-* Begin active testing and debugging as the Nimbus implementation reaches a testable state. Write spec-aligned test cases, identify and report failures, and contribute fixes where appropriate.
+### Phase 4: Validator Duties
+Implement the validator-side logic: epoch scheduling of IL duties, compiling transactions from the local mempool, and signing and publishing the `SignedInclusionList`.
 
-### Phase 4 (Weeks 14–16): 
+### Phase 5: Enforcement (Gloas fork-choice gated)
+Gate head selection so that only FOCIL-satisfying blocks are eligible as canonical heads, and enforce that proposers include the required IL transactions.
 
-* Participate in cross-client interop testing on FOCIL devnets alongside other CL and EL implementations, ensuring Nimbus behaves correctly in multi-client environments.
+### Phase 6: Testing & API Hardening
+The phase where our contribution is most concentrated. Focus on extensive testing through the consensus-spec-tests, cross-client interop on FOCIL devnets, and hardening the APIs and edge cases surfaced along the way.
+
+**Ordering note:** Phases 2 (EL/Engine) and 3 (Networking) are independent of each other and can be worked on in either order or concurrently. Testing and debugging (Phase 6) runs continuously alongside the earlier phases rather than only at the end.
 
 ## Possible challenges
 
@@ -78,6 +92,8 @@ Success looks like:
 
 * **Abhivansh** ([@akronim26](https://github.com/akronim26))
 * **Sagar** ([@SoarinSkySagar](https://github.com/SoarinSkySagar))
+
+We will be pursuing this work together and divide work as we see fit with blockers and work items
 
 ### Mentors
 
