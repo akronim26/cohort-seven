@@ -1,6 +1,7 @@
 # Teku Light Client Protocol
 
-Implementing server-side light client protocol in Teku consensus client for resource-constrained nodes.
+Implementing server-side light client protocol in Teku consensus client
+for resource-constrained nodes.
 
 ## Motivation
 
@@ -8,113 +9,102 @@ The Altair upgrade introduced the [light client sync protocol](https://github.co
 
 In this protocol, full beacon nodes need to act as reliable data providers. They must produce, keep, and share the light client data that enables other peers to bootstrap, follow finalized checkpoints, and track the latest head. This is important for environments where running a full node is unrealistic but relying entirely on centralized infrastructure weakens Ethereum's trust model.
 
-## Project description
+## Project Description
 
 Teku already supports the initial light client bootstrap flow, which gives a light client a trusted starting point. However, bootstrap data alone is not enough. After a light client starts, it also needs fresh updates so it can keep following Ethereum over time.
 
 The goal of this project is to complete Teku's server-side light client support so Teku can generate, store, and serve regular light client updates, finality updates, and optimistic updates through the standard network and API channels.
 
-The project is server-side only and covers REST, gossip, and request/response networking across active forks from Altair onward. Client-side light client sync, where Teku would act as a light client itself, is out of scope.
+The project is server-side only and covers REST, gossip, and Req/Resp networking across active forks from Altair onward, including the upcoming Gloas fork. Client-side light client sync, where Teku would act as a light client itself, is out of scope.
 
 ## Specification
 
-The implementation includes several components:
+The implementation follows the [consensus-specs light client protocol](https://github.com/ethereum/consensus-specs/blob/master/specs/altair/light-client/), which evolves across forks (Altair → Capella → Deneb → Electra → Gloas). The key areas of work are:
 
-**1. SSZ Containers**
-Existing (reuse):
-* `LightClientHeader`: Beacon block header with execution payload header (post-Capella) and Merkle proof branches.
-* `LightClientBootstrap`: Contains `header`, `current_sync_committee`, and `current_sync_committee_branch`.
-* `LightClientUpdate`: Exists but schema is not fork-aware for Electra gindices.
+### Data Types
 
-New:
-* `LightClientFinalityUpdate`: Contains `attested_header`, `finalized_header`, `finality_branch`, `sync_aggregate`, and `signature_slot`.
-* `LightClientOptimisticUpdate`: Contains `attested_header`, `sync_aggregate`, and `signature_slot`.
-* `LightClientUpdateSchemaElectra` / `LightClientFinalityUpdateSchemaElectra`: Fork-aware schema variants using Electra gindices (`FINALIZED_ROOT_GINDEX_ELECTRA=169`, `NEXT_SYNC_COMMITTEE_GINDEX_ELECTRA=87`).
+The protocol defines several SSZ containers. Teku already has `LightClientHeader`, `LightClientBootstrap`, and `LightClientUpdate`. This project adds the missing types - `LightClientFinalityUpdate` and `LightClientOptimisticUpdate`.
 
-**2. Server-Side Data Generation**
-Existing (reuse):
-* `getLightClientBootstrap`: Generates bootstrap from beacon state.
-* `BeaconStateAltair.createCurrentSyncCommitteeProof()`: Computes the current sync committee Merkle branch.
-* `MerkleUtil.constructMerkleProof(root, leafGeneralizedIndex)`: Generic Merkle proof builder.
+* **Fork Transitions (Altair to Electra):** From Capella onward, the `LightClientHeader` includes an `ExecutionPayloadHeader` and a merkle proof to let light clients verify execution-layer headers. At Electra, the generalized indices for sync committee and finality proofs shift due to new `BeaconState` fields, requiring fork-epoch-based dispatch.
+* **Gloas Fork Update:** Gloas removes the `ExecutionPayloadHeader` entirely from both the beacon block and state.
 
-New:
-* `createNextSyncCommitteeProof()`: Proof helper on `BeaconStateAltair` for the next sync committee branch.
-* `createFinalityBranchProof()`: Proof helper computing the finality branch (leaf is `finalized_checkpoint.root`, two levels deep via `getChildGeneralizedIndex`).
-* `create_light_client_update(attestedBlock, attestedState, finalizedBlock)`: Generates a `LightClientUpdate` at sync committee period boundaries.
-* `create_light_client_finality_update(update)`: Derives a `LightClientFinalityUpdate` from an update whenever a new block is finalized.
-* `create_light_client_optimistic_update(update)`: Derives a `LightClientOptimisticUpdate` on every new head block using the `sync_aggregate` from the attesting block.
-* `is_better_update(newUpdate, oldUpdate)`: Predicate implementing the spec's best-update comparison logic (supermajority → finality+committee → participation → attested slot → older signature slot).
+### Server-Side Data Generation
 
-**3. Storage & Collection**
-* `LightClientUpdateStore`: In-memory cache using `ConcurrentSkipListMap<period, LightClientUpdate>` + volatile latest finality/optimistic updates. Queries: `getBestUpdatesInRange(startPeriod, count)`, `getLatestFinalityUpdate()`, `getLatestOptimisticUpdate()`.
-* `LightClientServerService`: Subscribes to block-import and finalization event channels. For each imported block with a sync aggregate, loads the attested block/state via `RecentChainData`, calls the `create_*` methods, and offers results to the store off the import hot path.
-* `computeSyncCommitteePeriod(epoch)`: Helper (`epoch // EPOCHS_PER_SYNC_COMMITTEE_PERIOD`).
-* Reorg Handling: Logic to invalidate and regenerate stored light client data when chain reorganizations occur.
+* **`create_light_client_update`** — generates a full update from attested block/state and optional finalized block.
+* **`create_light_client_finality_update`** — derives a finality update from a full update.
+* **`create_light_client_optimistic_update`** — derives an optimistic update.
+* **`is_better_update`** — the spec's comparison predicate for selecting the best update per sync committee period.
+* **Proof helpers** — Merkle branch computation for next sync committee and finalized checkpoint root. 
+* **Gloas Canonical Execution Shift:** Under Gloas' ePBS rules, execution payload data in a beacon block is a future bid and might not become canonical. The canonical execution state is stored in `latest_block_hash`. Thus, for post-Gloas blocks, the execution proof generates a merkle branch proving the parent block hash instead of the block's own execution payload root.
 
-**4. REST API Endpoints**
-Existing (fix):
-* `GET /eth/v1/beacon/light_client/bootstrap/{block_root}`: Already implemented.
-* `GetLightClientUpdatesByRange`: Currently returns **501 Not Implemented** — needs completion.
+### REST API
 
-New:
-* `GET /eth/v1/beacon/light_client/updates?start_period={}&count={}`: Returns `LightClientUpdate` objects for the requested sync committee period range.
-* `GET /eth/v1/beacon/light_client/finality_update`: Returns the latest `LightClientFinalityUpdate`.
-* `GET /eth/v1/beacon/light_client/optimistic_update`: Returns the latest `LightClientOptimisticUpdate`.
-* `ChainDataProvider`: New methods `getLightClientUpdatesByRange`, `getLightClientFinalityUpdate`, `getLightClientOptimisticUpdate` backed by the store.
-* All endpoints support both JSON and SSZ (`application/octet-stream`) response formats via the `Accept` header, with fork `version` in response metadata.
+There are four standard Beacon API light client endpoints:
 
-**5. P2P Networking & Gossip**
-* Gossip Topic (`/eth2/<fork_digest>/light_client_finality_update/ssz_snappy`): Publishes `LightClientFinalityUpdate` objects when a new finalized checkpoint is reached.
-* Gossip Topic (`/eth2/<fork_digest>/light_client_optimistic_update/ssz_snappy`): Publishes `LightClientOptimisticUpdate` objects on every new head.
-* `GossipTopicName`: Add `LIGHT_CLIENT_FINALITY_UPDATE` and `LIGHT_CLIENT_OPTIMISTIC_UPDATE` entries.
-* Gossip managers extending `AbstractGossipManager`, registered in `GossipForkSubscriptionsAltair.addGossipManagers`.
-* Req/Resp RPC methods registered in `BeaconChainMethods`:
-  * `light_client_bootstrap` (req = block root, single response)
-  * `light_client_updates_by_range` (streamed response, needs `LightClientUpdatesByRangeRequestMessage`)
-  * `light_client_finality_update` (empty request, single response)
-  * `light_client_optimistic_update` (empty request, single response)
+* `GET /eth/v1/beacon/light_client/updates` — currently returns 501, needs completion.
+* `GET /eth/v1/beacon/light_client/finality_update` — new.
+* `GET /eth/v1/beacon/light_client/optimistic_update` — new.
+* `GET /eth/v1/beacon/light_client/bootstrap` — already works.
+
+All endpoints support JSON and SSZ response formats with fork `version` metadata.
+
+### P2P Networking
+
+Two new gossip topics broadcast updates to subscribed light clients:
+
+* `light_client_finality_update`
+* `light_client_optimistic_update`
+
+Req/Resp RPC methods allow peers to request light client data on demand - bootstrap by block root, updates by sync committee period range, latest finality update, and latest optimistic update.
 
 ## Roadmap
 
-| Phase | Timeline | Focus | Expected outcome |
-|-------|----------|-------|------------------|
-| 1 | Weeks 6-8 | Spec layer and generation | Add the missing update types, fork-aware schema support, proof helpers, update generation, fixtures, and reference tests. |
-| 2 | Weeks 9-11 | In-memory store | Build the update store, best-update selection logic, and unit tests for replacement and range queries. |
-| 3 | Weeks 11-13 | Runtime collection | Connect the store to block import and finalization events while keeping update generation off the import hot path. |
-| 4 | Weeks 14-15 | REST API support | Complete ranged updates, finality update, and optimistic update endpoints with JSON and SSZ integration tests. |
-| 5 | Weeks 16-18 | Gossip publishing | Publish finality and optimistic updates to the P2P network when new data becomes available. |
-| 6 | Weeks 19-20 | Request/response networking | Add peer request handlers for bootstrap data and light client updates, with round-trip networking tests. |
+**Weeks 6–7 — Spec layer and data generation** Implement the missing light client update types and schemas with fork-aware generation logic for active forks Altair through Gloas.
 
-## Possible challenges
+**Weeks 8–11 - In-memory store and collection wiring** Build the in-memory store, implement best-update selection logic, and hook up runtime collection to block-import and finalization events.
 
-* Historical data may not always be available on pruned or minimal nodes, so I need to figure out the workarounds.
-* Fork-specific proof details differ across protocol versions, so tests need to cover both earlier forks and newer fork layouts.
-* Choosing the best update for a period has subtle ordering rules and should be tested independently.
+**Weeks 12–13 - REST API completion** Complete the remaining endpoints to serve update data, supporting both JSON and SSZ formats.
 
-## Goal of the project
+**Weeks 14–15 — Gossip publishing** Implement gossip managers to broadcast new finality and optimistic updates to the network.
+
+**Weeks 16–20 — Req/Resp RPC networking** Complete the remaining P2P Req/Resp RPC handlers and perform cross-client interoperability testing.
+
+## Possible Challenges
+
+* **Fork-Aware Indices:** Electra shifts generalized indices for sync committees and finality proofs, requiring epoch-aware dispatch.
+* **Gloas Execution Model:** Under ePBS, execution payload data in block bids is not canonical, so proofs must target the parent block hash instead.
+* **Dynamic Header Upgrades:** Transitioning pre-Gloas headers to post-Gloas structures dynamically requires discarding payload fields and reconstructing execution branches.
+* **Pruned Data Availability:** Storing updates on pruned or checkpoint-synced nodes where finalized blocks are unavailable requires graceful degradation.
+* **Best-Update Tiebreakers:** The `is_better_update` predicate has non-obvious comparison tiebreakers that require exhaustive testing.
+
+## Goal of the Project
 
 Success looks like:
 * Teku beacon nodes serve all four light client REST API endpoints with correct, spec-compliant data.
 * Teku gossips `LightClientFinalityUpdate` and `LightClientOptimisticUpdate` to the P2P network.
-* Teku responds to `LightClientBootstrapByRoot` and `LightClientUpdatesByRange` req/resp queries.
+* Teku responds to all four light client req/resp queries from peers.
 * Implementation passes all relevant consensus-spec-tests and interoperates with light clients syncing from other beacon node implementations.
-* Unit, reference, REST integration, and networking tests cover update generation, proof helpers, store behavior, endpoints, gossip publishing, and request/response round trips.
+* Unit, reference, REST integration, and networking tests cover the full scope.
 
 ## Collaborators
 
-### Fellows 
+### Fellows
 
 * **Abhivansh** ([@akronim26](https://github.com/akronim26))
 
 ### Mentors
 
+* **Paul Harris** ([@rolfyone](https://github.com/rolfyone)) — Core Developer, Teku Team
 
 ## Resources
 
-* [Light Client Sync Protocol Spec](https://github.com/ethereum/consensus-specs/blob/master/specs/global/light-client/sync-protocol.md)
-* [Light Client Full Node Spec](https://github.com/ethereum/consensus-specs/blob/master/specs/global/light-client/full-node.md)
-* [Light Client P2P Networking Spec](https://github.com/ethereum/consensus-specs/blob/master/specs/global/light-client/p2p-interface.md)
-* [Beacon REST API - Light Client Endpoints](https://ethereum.github.io/beacon-APIs/#/Beacon/getLightClientBootstrap)
+* [Light Client Sync Protocol Spec (Altair)](https://github.com/ethereum/consensus-specs/blob/master/specs/altair/light-client/sync-protocol.md)
+* [Light Client Full Node Spec (Altair)](https://github.com/ethereum/consensus-specs/blob/master/specs/altair/light-client/full-node.md)
+* [Light Client P2P Networking Spec (Altair)](https://github.com/ethereum/consensus-specs/blob/master/specs/altair/light-client/p2p-interface.md)
+* [Capella Light Client Spec](https://github.com/ethereum/consensus-specs/blob/master/specs/capella/light-client/sync-protocol.md)
+* [Deneb Light Client Spec](https://github.com/ethereum/consensus-specs/blob/master/specs/deneb/light-client/sync-protocol.md)
+* [Electra Light Client Spec](https://github.com/ethereum/consensus-specs/blob/master/specs/electra/light-client/sync-protocol.md)
+* [Extend light client protocol for Gloas (PR #5178)](https://github.com/ethereum/consensus-specs/pull/5178)
 * [Teku Consensus Client Repository](https://github.com/Consensys/teku)
-* [Teku Issue #6287 - Light Client Sync Endpoints](https://github.com/Consensys/teku/issues/6287)
+* [Teku Issue #4230 - Light Client Implementation Issue](https://github.com/Consensys/teku/issues/4230)
 * [Teku Pull Request #6384 - Partial implementation of Light Client Protocol](https://github.com/Consensys/teku/pull/6384)
