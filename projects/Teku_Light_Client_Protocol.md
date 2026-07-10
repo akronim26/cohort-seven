@@ -19,7 +19,7 @@ The project is server-side only and covers REST, gossip, and Req/Resp networking
 
 ## Specification
 
-The implementation follows the [consensus-specs light client protocol](https://github.com/ethereum/consensus-specs/blob/master/specs/altair/light-client/), which evolves across forks (Altair → Capella → Deneb → Electra → Gloas). The key areas of work are:
+The implementation follows the [consensus-specs](https://github.com/ethereum/consensus-specs/blob/master/specs/altair/light-client/), which evolves across forks (Altair → Capella → Deneb → Electra → Gloas). The key areas of work are:
 
 ### Data Types
 
@@ -29,10 +29,10 @@ The protocol defines several SSZ containers. Teku already has `LightClientHeader
 
 ### Server-Side Data Generation
 
-* **`create_light_client_update`** — generates a full update from attested state and optional finalized block.
-* **`create_light_client_finality_update`** — derives a finality update from a full update.
-* **`create_light_client_optimistic_update`** — derives an optimistic update.
-* **`is_better_update`** — the spec's comparison logic for selecting the best update per sync committee period.
+* `create_light_client_update` — generates a full update from attested state and optional finalized block.
+* `create_light_client_finality_update` — derives a finality update from a full update.
+* `create_light_client_optimistic_update` — derives an optimistic update.
+* `is_better_update` — the spec's comparison logic for selecting the best update per sync committee period.
 * **Proof helpers** — Merkle branch computation for next sync committee and finalized checkpoint root. 
 * **Gloas Canonical Execution Shift:** Under Gloas' ePBS rules, execution payload data in a beacon block is a future bid and might not become canonical. The canonical execution state is stored in `bid.block_hash`. Thus, for post-Gloas blocks, the execution proof generates a merkle branch proving the parent block hash instead of the block's own execution payload root.
 
