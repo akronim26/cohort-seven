@@ -34,7 +34,7 @@ The protocol defines several SSZ containers. Teku already has `LightClientHeader
 * `create_light_client_optimistic_update` — derives an optimistic update.
 * `is_better_update` — the spec's comparison logic for selecting the best update per sync committee period.
 * **Proof helpers** — Merkle branch computation for next sync committee and finalized checkpoint root. 
-* **Gloas Canonical Execution Shift:** Under Gloas' ePBS rules, execution payload data in a beacon block is a future bid and might not become canonical. The canonical execution state is stored in `bid.block_hash`. Thus, for post-Gloas blocks, the execution proof generates a merkle branch proving the parent block hash instead of the block's own execution payload root.
+* **Gloas Canonical Execution Shift:** Under Gloas' ePBS rules, execution payload data in a beacon block is a future bid and might not become canonical. The canonical execution state is stored in the hash of the canonical execution payload. Thus, for post-Gloas blocks, the execution proof generates a merkle branch proving the parent block hash instead of the block's own execution payload root.
 
 ### REST API
 
@@ -54,18 +54,22 @@ Two new gossip topics broadcast updates to subscribed light clients:
 * `light_client_finality_update`
 * `light_client_optimistic_update`
 
-Req/Resp RPC methods allow peers to request light client data on demand - bootstrap by block root, updates by sync committee period range, latest finality update, and latest optimistic update.
+Req/Resp RPC methods allow peers to request light client data on demand:
+
+* `LightClientBootstrap`
+* `LightClientUpdatesByRange`
+* `LightClientFinalityUpdate`
+* `LightClientOptimisticUpdate`
 
 ## Roadmap
 
 | Phase | Weeks | Deliverables |
 |-------|-------|--------------|
 | 1: Spec Layer & Data Generation | 6–7 | Implement the missing light client update types and schemas with fork-aware generation logic for active forks Altair through Gloas. |
-| 2: In-Memory Store & Collection Wiring | 8–11 | Build the in-memory store, implement best-update selection logic, and hook up runtime collection to block-import and finalization events. |
+| 2: Store & Collection Wiring | 8–11 | Build the store, implement best-update selection logic, and hook up runtime collection to block-import and finalization events. |
 | 3: REST API Completion | 12–13 | Complete the remaining endpoints to serve update data, supporting both JSON and SSZ formats. |
-| 4: Gossip Publishing | 14–16 | Implement gossip managers to broadcast new finality and optimistic updates to the network. |
-| 5: Req/Resp RPC Networking | 17–19 | Complete the remaining P2P Req/Resp RPC handlers. |
-| 6: Cross-Client Interop Testing | 20–22 | Perform cross-client interoperability testing against Lodestar, Nimbus, and Lighthouse light clients on Hoodi testnet. |
+| 4: P2P Gossip & Req/Resp Networking | 14–17 | Implement gossip managers to broadcast finality and optimistic updates to the network, and complete the remaining P2P Req/Resp RPC handlers. |
+| 5: Testing & Fixing | 18–21 | Address issues, bugs, and client optimizations identified during interop testing. |
 
 ## Possible Challenges
 
