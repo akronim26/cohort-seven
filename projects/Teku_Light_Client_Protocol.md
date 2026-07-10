@@ -74,8 +74,7 @@ Req/Resp RPC methods allow peers to request light client data on demand:
 ## Possible Challenges
 
 * Electra and Gloas shifts generalized indices for sync committees and finality proofs, requiring epoch-aware dispatch.
-* Transitioning pre-Gloas headers to post-Gloas structures dynamically requires discarding payload fields and reconstructing execution branches.
-* Storing updates on pruned nodes where finalized blocks are unavailable requires graceful degradation.
+* Historical data may not always be available on pruned or minimal nodes, which requires evaluation of the storage approach to ensure updates can be served reliably across restarts.
 * The `is_better_update` predicate has non-obvious comparison tiebreakers that require exhaustive testing.
 
 ## Goal of the Project
