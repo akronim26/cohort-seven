@@ -91,9 +91,11 @@ Success looks like:
 
 ### Fellows
 
-* **Abhivansh** ([@akronim26](https://github.com/akronim26))
+* [Abhivansh](https://github.com/akronim26)
 
 ### Mentors
+
+* [Paul Harris](https://github.com/rolfyone)
 
 ## Resources
 
