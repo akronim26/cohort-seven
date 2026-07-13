@@ -1,7 +1,6 @@
 # Teku Light Client Protocol
 
-Implementing server-side light client protocol in Teku consensus client
-for resource-constrained nodes.
+Implementing server-side light client protocol in Teku consensus client for resource-constrained nodes.
 
 ## Motivation
 
