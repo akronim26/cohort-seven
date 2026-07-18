@@ -6,13 +6,15 @@ Implementing server-side light client protocol in Teku consensus client for reso
 
 The Altair upgrade introduced the [light client sync protocol](https://github.com/ethereum/consensus-specs/blob/master/specs/altair/light-client/), which allows resource-constrained nodes to track Ethereum's state without replaying the full consensus chain. Instead of trusting a centralized provider, a light client can verify compact proofs and aggregated signatures from rotating sync committees, making it possible for low-resource infrastructure to follow Ethereum.
 
-In this protocol, full beacon nodes need to act as reliable data providers. They must produce, keep, and share the light client data that enables other peers to bootstrap, follow finalized checkpoints, and track the latest head. This is important for environments where running a full node is unrealistic but relying entirely on centralized infrastructure weakens Ethereum's trust model.
+This protocol has two sides: light clients that consume data and beacon nodes that serve it. On the server side, a node must produce, store and share the light client data that lets other peers bootstrap, follow finalized checkpoints and track the latest head. Teku currently implements only part of this serving role. It can provide a client with initial bootstrap, but it cannot yet serve the ongoing updates a client needs to follow the chain. This matters for environments where running a full node is unrealistic but relying entirely on centralized infrastructure weakens Ethereum's trust model.
 
 ## Project Description
 
 Teku already supports the initial light client bootstrap flow, which gives a light client a trusted starting point. However, bootstrap data alone is not enough. After a light client starts, it also needs fresh updates so it can keep following Ethereum over time.
 
 The goal of this project is to complete Teku's server-side light client support so Teku can generate, store, and serve regular light client updates, finality updates, and optimistic updates through the standard network and API channels.
+
+The project begins with a review of the partial work already done under [#6384](https://github.com/Consensys/teku/pull/6384) to establish what is in place, what is incomplete, and what regressed, before building on it.
 
 The project is server-side only and covers REST, gossip, and Req/Resp networking across active forks from Altair onward, including the upcoming Gloas fork. Client-side light client sync, where Teku would act as a light client itself, is out of scope.
 
@@ -69,12 +71,14 @@ Req/Resp RPC methods allow peers to request light client data on demand:
 | 3: REST API Completion | 12–13 | Complete the remaining endpoints to serve update data, supporting both JSON and SSZ formats. |
 | 4: P2P Gossip & Req/Resp Networking | 14–16 | Implement gossip managers to broadcast finality and optimistic updates to the network, and complete the remaining P2P Req/Resp RPC handlers. |
 | 5: Testing & Fixing | 17–20 | Address issues, bugs, and client optimizations identified during interop testing. |
+| (Stretch) | 20+ | If ahead of schedule, begin extending the completed server-side infrastructure toward decentralized CL checkpoint sync |
 
 ## Possible Challenges
 
 * Electra and Gloas shifts generalized indices for sync committees and finality proofs, requiring epoch-aware dispatch.
 * Historical data may not always be available on pruned or minimal nodes, which requires evaluation of the storage approach to ensure updates can be served reliably across restarts.
 * The `is_better_update` predicate has non-obvious comparison tiebreakers that require exhaustive testing.
+* The earlier work ([#6384](https://github.com/Consensys/teku/pull/6384)) surfaced a caching issue in how light client data is held and reused, so the storage and caching approach needs careful evaluation to serve updates efficiently without regressions.
 
 ## Goal of the Project
 
@@ -94,6 +98,7 @@ Success looks like:
 ### Mentors
 
 * [Paul Harris](https://github.com/rolfyone)
+* [Etan](https://github.com/etan-status)
 
 ## Resources
 
